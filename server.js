@@ -77,7 +77,7 @@ app.get('/', async (req, res) => {
       res.status(500).send('<h1>500 Internal Server Error</h1><p>Server responded with an error.</p>');
     }
   } catch (error) {
-    console.error(error.message);
+     console.error(error);
     res.status(500).send('<h1>500 Internal Server Error</h1><p>Request failed.</p>');
   }
 });
