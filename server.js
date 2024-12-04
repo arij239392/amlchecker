@@ -76,10 +76,15 @@ app.get('/', async (req, res) => {
     } else {
       res.status(500).send('<h1>500 Internal Server Error</h1><p>Server responded with an error.</p>');
     }
-  } catch (error) {
-     console.error(error);
+  } try {
+    console.log('Before database query'); // Отладочный вывод
+    const data = await someAsyncFunction();
+    console.log('After database query, data:', data); // Проверка возвращаемых данных
+    res.send(data);
+} catch (error) {
+    console.error(error); // Полный вывод ошибки
     res.status(500).send('<h1>500 Internal Server Error</h1><p>Request failed.</p>');
-  }
+}
 });
 
 // Start the server
